@@ -8,7 +8,7 @@ Blue: exploration... (Open_list)
 Green: Generated Path. 
 
 
-# Please note that I am using default values for 0-indexed language. i.e. our cost matrix of shape 250 * 400 that represents region can only take values upto. 249, 399. Please input initial and goal node accordingly. 
+Please note that I am using default values for 0-indexed language. i.e. our cost matrix of shape 250 * 400 that represents region can only take values upto. 249, 399. Please input initial and goal node accordingly. 
 
 
 The visualisation of exploration is done along with the exploration. i.e. generation of new nodes.
