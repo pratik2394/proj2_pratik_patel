@@ -26,3 +26,5 @@ I tested code without visualisation. and timing is as below.
 
 
 If the code is too slow, please comment out the visualisation part from exploration code. (i.e. visualization code in generate_child function. #you can see the comment in the code. 
+
+pythoncode_heapq.py is having heapq for open_list and is expected to run little faster. I am just adding that for speed comparision. 
