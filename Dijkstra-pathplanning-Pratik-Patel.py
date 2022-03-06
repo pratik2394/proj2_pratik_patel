@@ -113,9 +113,6 @@ cost_matrix[masked_img[:, :, 2] == 210] = -1
 
 
 
-
-
-
 # A code for getting a two points. 
 
 #Get Initial (Xi) and Goal(Xg) Node from the user. 
@@ -164,15 +161,16 @@ def create_childnode(the_node,open_list, closed_list):
         if ([the_node[1][0]+action[0], the_node[1][1]+action[1]] not in [closed_list[tempX_1][1] for tempX_1 in range(len(closed_list))]) & (cost_matrix[the_node[1][0]+action[0], the_node[1][1]+action[1]] != -1) & ((the_node[1][0]+action[0])< (cost_matrix.shape[0]-1)) & ((the_node[1][1]+action[1]) <(cost_matrix.shape[1]-1)) & ((the_node[1][0]+action[0])>=0) & ((the_node[1][1]+action[1]) >=0):
             if [the_node[1][0]+action[0], the_node[1][1]+action[1]] not in [open_list[tempX_2][1] for tempX_2 in range(len(open_list))]:
                 open_list.append([len(open_list)+len(closed_list)+1, [the_node[1][0]+action[0], the_node[1][1]+action[1]], the_node[0], the_node[1]])
+                node_registry.append([len(open_list)+len(closed_list)+1, [the_node[1][0]+action[0], the_node[1][1]+action[1]], the_node[0], the_node[1]])
                 #counter = counter+1
                 cost_matrix[the_node[1][0]+action[0], the_node[1][1]+action[1]] = cost_matrix[the_node[1][0], the_node[1][1]] + action[2]
-                masked_img[the_node[1][0]+action[0], the_node[1][1]+action[1]] = [120, 0, 0]
+                # masked_img[the_node[1][0]+action[0], the_node[1][1]+action[1]] = [120, 0, 0]
             #So, now only one possibility remains, this new node is in the open_list, lets check and if needed, we shall update it.
             elif cost_matrix[the_node[1][0]+action[0], the_node[1][1]+action[1]] > cost_matrix[the_node[1][0], the_node[1][1]] + action[2]: #checking if existing price is higher than the one that we are getting by this path. than updating.
                 cost_matrix[[the_node[1][0]+action[0], the_node[1][1]+action[1]]] = cost_matrix[the_node[1][0], the_node[1][1]] + action[2]
                 #Changing the parent 
                 open_list[[open_list[tempX_2][1] for tempX_2 in range(len(open_list))].index([the_node[1][0]+action[0], the_node[1][1]+action[1]])][2:4] = the_node[0], the_node[1]
-    
+                
     return True     
 
 
@@ -203,11 +201,11 @@ def queue_processing_function(open_list, closed_list):
 	#If the code is too slow, please comment out this visualization part for first time you run this algorithm. 
 	#Once the algorithm is over you can still see the path explored and path generated.  
 	#If algorithn runs successfully once, you can uncomment and run the slower version again. 
-        cv2.imshow('Exploration Visualization', masked_img)
-        cv2.waitKey(1) 
-        if highest_priority_node[1] == goal_state:
-            cv2.waitKey(0) & 0xFF == ord('q') 
-            cv2.destroyAllWindows()
+        # cv2.imshow('Exploration Visualization', masked_img)
+        # cv2.waitKey(1) 
+        # if highest_priority_node[1] == goal_state:
+        #     cv2.waitKey(0) & 0xFF == ord('q') 
+        #     cv2.destroyAllWindows()
     
         if highest_priority_node[1] == goal_state:      #Tis is not right. Do we need lowest cost to come to
             return highest_priority_node                        #This is the output of this function. which is to be put as an argument into generate_path function.
@@ -239,6 +237,7 @@ def generate_path(node_reached_goal, path_to_goal):
 
 
 
+
 # The main code:
 
 #Data structures for nodes in open_list and closed_list
@@ -248,25 +247,41 @@ def generate_path(node_reached_goal, path_to_goal):
 
 #Initializing open_list and closed list.
 
+node_registry = []
 open_list = []
 initial_state_node = [1, initial_state, 0, [0,0], 0]        #Taking initial_node as 1st node and its parent node as 0 and their co-ordinates as [0,0]. This parent node does not have significance. 
 open_list.append(initial_state_node)
-
+node_registry.append(initial_state_node)
 closed_list = []
 
-cv2.namedWindow("Exploration Visualization", cv2.WINDOW_NORMAL)
+
 
 Answer_node = queue_processing_function(open_list, closed_list)      
+
+print(Answer_node, 'Path is achieved. Now the visualization. \n')
+
+
+
+cv2.namedWindow("Exploration Visualization", cv2.WINDOW_NORMAL)
+for i in range(len(node_registry)):
+    masked_img[node_registry[i][1][0], node_registry[i][1][1]] = [120, 0, 0]
+    cv2.imshow('Exploration Visualization', masked_img)
+    cv2.waitKey(1) 
+    if node_registry[i][1] == goal_state:
+        cv2.waitKey(0) & 0xFF == ord('q') 
+        cv2.destroyAllWindows()
 cv2.destroyAllWindows()
-print(Answer_node)
 
 path_to_goal = []
 generate_path(Answer_node, path_to_goal)
 cv2.destroyAllWindows()
+
 
 del path_to_goal[-1]        #1 is added twice. So removing that mannally. Because just in case if you provide goal as input, it can detect it. 
 path_to_goal.sort()             #algorithm is written in a way that provides path_to_goal in reverse order.. This rectifies that. 
 path_to_goal.append(Answer_node[0])      #Adding the final node's number 
 print('\n\n The path to goal(This is the self node numbers): ', path_to_goal)
 cv2.destroyAllWindows()
+
+
 
