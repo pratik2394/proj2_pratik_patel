@@ -204,7 +204,7 @@ def queue_processing_function(open_list, closed_list):
 	#Once the algorithm is over you can still see the path explored and path generated.  
 	#If algorithn runs successfully once, you can uncomment and run the slower version again. 
         cv2.imshow('Exploration Visualization', masked_img)
-        cv2.waitKey(50) 
+        cv2.waitKey(1) 
         if highest_priority_node[1] == goal_state:
             cv2.waitKey(0) & 0xFF == ord('q') 
             cv2.destroyAllWindows()
